@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8001:8000"
+    environment:
+      - DB_PATH=/app/data/book_simulator.db
+      - ITICK_TOKEN=${ITICK_TOKEN:-}
+      - INITIAL_FUND=${INITIAL_FUND:-10000}
+    volumes:
+      - backend_data:/app/data
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    ports:
+      - "5174:5173"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8000
+    volumes:
+      - ./web/src:/app/src
+      - ./web/public:/app/public
+      - ./web/index.html:/app/index.html
+      - ./web/vite.config.ts:/app/vite.config.ts
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_data:
