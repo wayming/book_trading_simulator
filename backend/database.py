@@ -52,8 +52,23 @@ class Database:
         self._db_conn.commit()
 
     def _migrate(self):
-        """Add missing columns to existing tables."""
-        pass
+        """Add missing columns to existing tables and backfill NULLs."""
+        migrations = [
+            "ALTER TABLE holdings ADD COLUMN region TEXT DEFAULT 'AU'",
+            "ALTER TABLE trade_history ADD COLUMN region TEXT DEFAULT 'AU'",
+        ]
+        for sql in migrations:
+            try:
+                self._db_conn.execute(sql)
+            except sqlite3.OperationalError:
+                pass  # column already exists
+        # Backfill NULL values (ALTER TABLE ADD COLUMN leaves NULLs in old rows)
+        try:
+            self._db_conn.execute("UPDATE holdings SET region = 'AU' WHERE region IS NULL")
+            self._db_conn.execute("UPDATE trade_history SET region = 'AU' WHERE region IS NULL")
+            self._db_conn.commit()
+        except sqlite3.OperationalError:
+            pass
 
     def close(self):
         if self._db_conn:
@@ -85,7 +100,7 @@ class Database:
     # Holdings
     #
 
-    def upsert_holding(self, symbol: str, quantity: int, price: float, total_cost: float):
+    def upsert_holding(self, symbol: str, quantity: int, price: float, total_cost: float, region: str = "AU"):
         """Insert or update a holding. On buy of existing symbol, recalculate
         weighted average price and add to quantity."""
         existing = self.get_holding(symbol)
@@ -97,16 +112,16 @@ class Database:
             new_avg_price = new_total_cost / new_qty if new_qty > 0 else 0.0
             self._db_conn.execute(
                 """UPDATE holdings
-                   SET quantity = ?, avg_price = ?, total_cost = ?, updated_at = ?
+                   SET quantity = ?, avg_price = ?, total_cost = ?, updated_at = ?, region = ?
                    WHERE symbol = ?""",
-                (new_qty, new_avg_price, new_total_cost, now, symbol),
+                (new_qty, new_avg_price, new_total_cost, now, region.upper(), symbol),
             )
         else:
             holding_id = str(uuid.uuid4())
             self._db_conn.execute(
-                """INSERT INTO holdings (id, symbol, quantity, avg_price, total_cost, created_at, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                (holding_id, symbol.upper(), quantity, price, total_cost, now, now),
+                """INSERT INTO holdings (id, symbol, quantity, avg_price, total_cost, created_at, updated_at, region)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (holding_id, symbol.upper(), quantity, price, total_cost, now, now, region.upper()),
             )
         self._db_conn.commit()
 
@@ -136,8 +151,8 @@ class Database:
         trade_id = item.get("id") or str(uuid.uuid4())
         self._db_conn.execute(
             """INSERT INTO trade_history
-               (id, action, symbol, quantity, price, total_value, fund_balance_after, timestamp)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+               (id, action, symbol, quantity, price, total_value, fund_balance_after, region, timestamp)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 trade_id,
                 item["action"],
@@ -146,17 +161,24 @@ class Database:
                 item["price"],
                 item["total_value"],
                 item["fund_balance_after"],
+                item.get("region", "AU").upper(),
                 item.get("timestamp", datetime.now(timezone.utc).isoformat()),
             ),
         )
         self._db_conn.commit()
         return trade_id
 
-    def list_trades(self, limit: int = 50, offset: int = 0) -> list[dict]:
-        rows = self._db_conn.execute(
-            "SELECT * FROM trade_history ORDER BY timestamp DESC LIMIT ? OFFSET ?",
-            (limit, offset),
-        ).fetchall()
+    def list_trades(self, limit: int = 50, offset: int = 0, region: str = None) -> list[dict]:
+        if region:
+            rows = self._db_conn.execute(
+                "SELECT * FROM trade_history WHERE region = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+                (region.upper(), limit, offset),
+            ).fetchall()
+        else:
+            rows = self._db_conn.execute(
+                "SELECT * FROM trade_history ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+                (limit, offset),
+            ).fetchall()
         return [dict(r) for r in rows]
 
     def get_trades_by_symbol(self, symbol: str) -> list[dict]:

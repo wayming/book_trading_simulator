@@ -2,57 +2,65 @@ import type { AccountSummary as AccountSummaryType } from '../api';
 
 interface Props {
   account: AccountSummaryType | null;
+  region: string;
 }
 
 function fmt(n: number): string {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export default function AccountSummary({ account }: Props) {
+export default function AccountSummary({ account, region }: Props) {
   if (!account) {
     return (
       <div className="card" style={{ flex: 1 }}>
-        <h3>Account Summary</h3>
+        <h3>{region} · Account</h3>
         <div className="empty">Loading...</div>
       </div>
     );
   }
 
+  const regionBalance = account.region_balances[region] ?? 0;
+  const regionHoldings = account.holdings.filter(h => h.region === region);
+  const holdingsValue = regionHoldings.reduce((sum, h) => sum + h.market_value, 0);
+  const portfolioValue = regionBalance + holdingsValue;
+  const pnl = portfolioValue - account.initial_fund;
+  const pnlPct = account.initial_fund > 0 ? (pnl / account.initial_fund) * 100 : 0;
+
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <h3>Account Summary</h3>
+      <h3>{region} · Account</h3>
 
       {/* Key metrics */}
       <div className="stats" style={{ marginBottom: 12 }}>
         <div className="stat">
-          <div className="val">${fmt(account.fund_balance)}</div>
+          <div className="val">${fmt(regionBalance)}</div>
           <div className="lbl">Fund Balance</div>
         </div>
         <div className="stat">
-          <div className="val">${fmt(account.total_holdings_value)}</div>
+          <div className="val">${fmt(holdingsValue)}</div>
           <div className="lbl">Holdings Value</div>
         </div>
         <div className="stat">
-          <div className="val">${fmt(account.total_portfolio_value)}</div>
+          <div className="val">${fmt(portfolioValue)}</div>
           <div className="lbl">Portfolio Value</div>
         </div>
         <div className="stat">
-          <div className={`val ${account.total_pnl >= 0 ? 'ok' : 'err'}`}>
-            {account.total_pnl >= 0 ? '+' : ''}{fmt(account.total_pnl)}
+          <div className={`val ${pnl >= 0 ? 'ok' : 'err'}`}>
+            {pnl >= 0 ? '+' : ''}{fmt(pnl)}
           </div>
-          <div className="lbl">Total P&amp;L ({account.total_pnl_pct >= 0 ? '+' : ''}{account.total_pnl_pct.toFixed(2)}%)</div>
+          <div className="lbl">P&amp;L ({pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(2)}%)</div>
         </div>
       </div>
 
-      {/* Holdings list */}
-      <h3 style={{ marginTop: 4 }}>Holdings ({account.holdings.length})</h3>
-      {account.holdings.length === 0 ? (
+      {/* Holdings */}
+      <h3 style={{ marginTop: 4 }}>Holdings ({regionHoldings.length})</h3>
+      {regionHoldings.length === 0 ? (
         <div className="empty" style={{ padding: 20, fontSize: 12 }}>
-          No holdings yet. Buy some stocks!
+          No holdings in {region}. Buy some stocks!
         </div>
       ) : (
         <div className="col-scroll">
-          {account.holdings.map(h => (
+          {regionHoldings.map(h => (
             <div key={h.id} className="holding-item">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="holding-symbol">{h.symbol}</span>

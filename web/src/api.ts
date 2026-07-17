@@ -16,7 +16,7 @@ export interface MarketStatus {
 
 export interface ConfigResponse {
   initial_fund: number;
-  fund_balance: number;
+  region_balances: Record<string, number>;
   itick_token_masked: string;
 }
 
@@ -33,6 +33,7 @@ export interface BuyRequest {
 
 export interface SellRequest {
   symbol: string;
+  region: string;
 }
 
 export interface TradeRecord {
@@ -43,12 +44,14 @@ export interface TradeRecord {
   price: number;
   total_value: number;
   fund_balance_after: number;
+  region: string;
   timestamp: string;
 }
 
 export interface Holding {
   id: string;
   symbol: string;
+  region: string;
   quantity: number;
   avg_price: number;
   total_cost: number;
@@ -65,12 +68,26 @@ export interface AccountSummary {
   total_portfolio_value: number;
   total_pnl: number;
   total_pnl_pct: number;
+  region_balances: Record<string, number>;
   holdings: Holding[];
 }
 
 export interface TradeRecordsResponse {
   trades: TradeRecord[];
   account: AccountSummary;
+}
+
+export interface QuoteResponse {
+  symbol: string;
+  region: string;
+  price: number;
+  open: number;
+  high: number;
+  low: number;
+  volume: number;
+  change: number;
+  change_pct: number;
+  timestamp: string;
 }
 
 // ── API functions ─────────────────────────────────────
@@ -82,6 +99,15 @@ export async function fetchHealth(): Promise<HealthStatus> {
 
 export async function fetchMarketStatus(): Promise<MarketStatus> {
   const res = await fetch(`${BASE}/market-status`);
+  return res.json();
+}
+
+export async function fetchQuote(region: string, symbol: string): Promise<QuoteResponse> {
+  const res = await fetch(`${BASE}/quote?region=${encodeURIComponent(region)}&symbol=${encodeURIComponent(symbol)}`);
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || 'Quote failed');
+  }
   return res.json();
 }
 
@@ -129,8 +155,10 @@ export async function sellStock(req: SellRequest): Promise<TradeRecord> {
   return res.json();
 }
 
-export async function fetchRecords(limit = 50, offset = 0): Promise<TradeRecordsResponse> {
-  const res = await fetch(`${BASE}/records?limit=${limit}&offset=${offset}`);
+export async function fetchRecords(limit = 50, offset = 0, region?: string): Promise<TradeRecordsResponse> {
+  let url = `${BASE}/records?limit=${limit}&offset=${offset}`;
+  if (region) url += `&region=${encodeURIComponent(region)}`;
+  const res = await fetch(url);
   return res.json();
 }
 

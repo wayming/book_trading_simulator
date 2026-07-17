@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Props {
   onBuy: (region: string, fundAmount: number, symbol: string) => Promise<void>;
+  defaultRegion?: string;
 }
 
-export default function BuyForm({ onBuy }: Props) {
-  const [region, setRegion] = useState('AU');
+export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
+  const [region, setRegion] = useState(defaultRegion);
+  useEffect(() => { setRegion(defaultRegion); }, [defaultRegion]);
   const [fundAmount, setFundAmount] = useState('');
   const [symbol, setSymbol] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,7 @@ export default function BuyForm({ onBuy }: Props) {
             <option value="HK">HK — Hong Kong</option>
             <option value="SZ">SZ — Shenzhen</option>
             <option value="SH">SH — Shanghai</option>
+            <option value="NL">NL — Netherlands</option>
           </select>
         </div>
 

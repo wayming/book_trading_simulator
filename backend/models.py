@@ -15,7 +15,7 @@ class ConfigUpdate(BaseModel):
 
 class ConfigResponse(BaseModel):
     initial_fund: float
-    fund_balance: float
+    region_balances: dict[str, float]
     itick_token_masked: str
 
 
@@ -31,6 +31,7 @@ class BuyRequest(BaseModel):
 
 class SellRequest(BaseModel):
     symbol: str
+    region: str = "AU"
 
 
 class TradeRecord(BaseModel):
@@ -41,12 +42,14 @@ class TradeRecord(BaseModel):
     price: float
     total_value: float
     fund_balance_after: float
+    region: str = "AU"
     timestamp: str
 
 
 class Holding(BaseModel):
     id: str
     symbol: str
+    region: str = "AU"
     quantity: int
     avg_price: float
     total_cost: float
@@ -63,6 +66,7 @@ class AccountSummary(BaseModel):
     total_portfolio_value: float
     total_pnl: float
     total_pnl_pct: float
+    region_balances: dict[str, float] = {}
     holdings: list[Holding]
 
 
@@ -89,3 +93,20 @@ class MarketStatus(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+#
+# Quote (no trade, no market-hours restriction)
+#
+
+class QuoteResponse(BaseModel):
+    symbol: str
+    region: str
+    price: float
+    open: float = 0.0
+    high: float = 0.0
+    low: float = 0.0
+    volume: float = 0.0
+    change: float = 0.0
+    change_pct: float = 0.0
+    timestamp: str = ""

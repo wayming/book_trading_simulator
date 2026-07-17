@@ -1,0 +1,423 @@
+2026-07-17 13:14:02 [INFO] book_simulator.main: Log level configured: DEBUG (set LOG_LEVEL env var to change)
+2026-07-17 13:14:02 [DEBUG] book_simulator.main: DEBUG logging is ENABLED — this message confirms it works
+2026-07-17 13:14:02 [INFO] book_simulator.main: Book Trading Simulator backend ready.
+2026-07-17 13:14:58 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:14:58 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:14:58 [INFO] book_simulator.http: <-- GET /api/health  200  12.5ms
+2026-07-17 13:14:58 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/health  200  2.1ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/records  200  3.0ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/config  200  3.7ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/health  0  3.0ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/config  200  13.3ms
+2026-07-17 13:15:09 [INFO] book_simulator.http: <-- GET /api/records  200  13.3ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/config  0  1.4ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/health  200  5.2ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/records  200  5.6ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/config  200  1.4ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/health  200  2.6ms
+2026-07-17 13:15:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.0ms
+2026-07-17 13:15:24 [INFO] book_simulator.http: --> POST /api/buy  [client=172.27.0.3]
+2026-07-17 13:15:24 [INFO] book_simulator.http: <-- POST /api/buy  400  2.4ms
+2026-07-17 13:15:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.2ms
+2026-07-17 13:15:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:15:42 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:42 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:42 [INFO] book_simulator.http: <-- GET /api/health  200  4.7ms
+2026-07-17 13:15:42 [INFO] book_simulator.http: <-- GET /api/records  200  5.3ms
+2026-07-17 13:15:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:15:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:15:56 [INFO] book_simulator.http: <-- GET /api/health  200  4.2ms
+2026-07-17 13:15:56 [INFO] book_simulator.http: <-- GET /api/records  200  5.5ms
+2026-07-17 13:15:59 [INFO] book_simulator.http: --> PUT /api/config  [client=172.27.0.3]
+2026-07-17 13:15:59 [INFO] book_simulator.http: <-- PUT /api/config  200  66.1ms
+2026-07-17 13:16:00 [INFO] book_simulator.http: --> POST /api/buy  [client=172.27.0.3]
+2026-07-17 13:16:00 [DEBUG] book_simulator.api: [API BUY] region=NL  fund_amount=5000.0  symbol=ASML
+2026-07-17 13:16:00 [DEBUG] book_simulator.services: [BUY REQUEST] region=NL  fund_amount=5000.0  symbol=ASML  fund_balance=10000.0
+2026-07-17 13:16:00 [INFO] book_simulator.services: iTick client created successfully
+2026-07-17 13:16:00 [DEBUG] book_simulator.services: [iTick REQUEST]  get_stock_quote(region='NL', code='ASML')  token=cc200a99...
+2026-07-17 13:16:01 [DEBUG] book_simulator.services: [iTick RESPONSE] ASML  price=1522.6  open=1536.0  high=1559.0  low=1514.6  volume=383421.0  change=-75.8  change_pct=-4.74%  raw_keys=['s', 'ld', 'p', 'o', 'h', 'l', 't', 'v', 'tu', 'ch', 'chp', 'ts', 'type', 'r']
+2026-07-17 13:16:01 [INFO] book_simulator.services: Quote for ASML: price=$1522.60
+2026-07-17 13:16:01 [INFO] book_simulator.services: BUY [NL] 3 shares of ASML at $1522.60 = $4,567.80. Fund: $10,000.00 → $5,432.20
+2026-07-17 13:16:01 [DEBUG] book_simulator.api: [API BUY RESPONSE] id=fca80edc-606f-4d98-8782-5a3a318b5e3f  symbol=ASML  qty=3  price=1522.6  total=4567.799999999999  fund_after=5432.2
+2026-07-17 13:16:01 [INFO] book_simulator.http: <-- POST /api/buy  200  436.7ms
+2026-07-17 13:16:01 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:01 [DEBUG] book_simulator.services: [iTick REQUEST]  get_stock_quote(region='NL', code='ASML')  token=cc200a99...
+2026-07-17 13:16:01 [DEBUG] book_simulator.services: [iTick RESPONSE] ASML  price=1522.6  open=1536.0  high=1559.0  low=1514.6  volume=383421.0  change=-75.8  change_pct=-4.74%  raw_keys=['s', 'ld', 'p', 'o', 'h', 'l', 't', 'v', 'tu', 'ch', 'chp', 'ts', 'type', 'r']
+2026-07-17 13:16:01 [INFO] book_simulator.http: <-- GET /api/records  200  220.5ms
+2026-07-17 13:16:01 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:16:01 [INFO] book_simulator.http: <-- GET /api/config  200  1.4ms
+2026-07-17 13:16:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:16:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:11 [INFO] book_simulator.http: <-- GET /api/health  200  4.5ms
+2026-07-17 13:16:11 [DEBUG] book_simulator.services: [iTick REQUEST]  get_stock_quote(region='NL', code='ASML')  token=cc200a99...
+2026-07-17 13:16:11 [DEBUG] book_simulator.services: [iTick RESPONSE] ASML  price=1522.8  open=1536.0  high=1559.0  low=1514.6  volume=383504.0  change=-75.6  change_pct=-4.73%  raw_keys=['s', 'ld', 'p', 'o', 'h', 'l', 't', 'v', 'tu', 'ch', 'chp', 'ts', 'type', 'r']
+2026-07-17 13:16:11 [INFO] book_simulator.http: <-- GET /api/records  200  218.3ms
+2026-07-17 13:16:23 [INFO] book_simulator.http: --> POST /api/sell  [client=172.27.0.3]
+2026-07-17 13:16:23 [DEBUG] book_simulator.api: [API SELL] symbol=ASML  region=NL
+2026-07-17 13:16:23 [DEBUG] book_simulator.services: [SELL REQUEST] symbol=ASML  region=NL
+2026-07-17 13:16:23 [DEBUG] book_simulator.services: [SELL HOLDING] symbol=ASML  quantity=3  avg_price=1522.6  total_cost=4567.799999999999  region=NL
+2026-07-17 13:16:23 [DEBUG] book_simulator.services: [iTick REQUEST]  get_stock_quote(region='NL', code='ASML')  token=cc200a99...
+2026-07-17 13:16:24 [DEBUG] book_simulator.services: [iTick RESPONSE] ASML  price=1523.6  open=1536.0  high=1559.0  low=1514.6  volume=383621.0  change=-74.8  change_pct=-4.68%  raw_keys=['s', 'ld', 'p', 'o', 'h', 'l', 't', 'v', 'tu', 'ch', 'chp', 'ts', 'type', 'r']
+2026-07-17 13:16:24 [INFO] book_simulator.services: Quote for ASML: price=$1523.60
+2026-07-17 13:16:24 [INFO] book_simulator.services: SELL [NL] 3 shares of ASML at $1523.60 = $4,570.80. P&L: $3.00. Fund: $5,432.20 → $10,003.00
+2026-07-17 13:16:24 [DEBUG] book_simulator.api: [API SELL RESPONSE] id=8a288f77-3078-4650-af73-ba60e0f5fd8c  symbol=ASML  qty=3  price=1523.6  total=4570.799999999999  fund_after=10003.0
+2026-07-17 13:16:24 [INFO] book_simulator.http: <-- POST /api/sell  200  290.0ms
+2026-07-17 13:16:24 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:24 [INFO] book_simulator.http: <-- GET /api/records  200  2.0ms
+2026-07-17 13:16:24 [INFO] book_simulator.http: --> GET /api/config  [client=172.27.0.3]
+2026-07-17 13:16:24 [INFO] book_simulator.http: <-- GET /api/config  200  1.7ms
+2026-07-17 13:16:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:16:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:26 [INFO] book_simulator.http: <-- GET /api/health  200  2.6ms
+2026-07-17 13:16:26 [INFO] book_simulator.http: <-- GET /api/records  200  3.6ms
+2026-07-17 13:16:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:16:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:41 [INFO] book_simulator.http: <-- GET /api/health  0  2.5ms
+2026-07-17 13:16:41 [INFO] book_simulator.http: <-- GET /api/records  200  6.4ms
+2026-07-17 13:16:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:16:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:16:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.8ms
+2026-07-17 13:16:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:17:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:17:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:17:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:17:11 [INFO] book_simulator.http: <-- GET /api/records  200  5.4ms
+2026-07-17 13:17:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:17:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:17:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:17:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:17:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:17:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:17:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.2ms
+2026-07-17 13:17:41 [INFO] book_simulator.http: <-- GET /api/records  200  3.8ms
+2026-07-17 13:17:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:17:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:17:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:17:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.2ms
+2026-07-17 13:18:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:18:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:18:11 [INFO] book_simulator.http: <-- GET /api/health  200  2.7ms
+2026-07-17 13:18:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:18:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:18:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:18:26 [INFO] book_simulator.http: <-- GET /api/health  200  2.7ms
+2026-07-17 13:18:26 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:18:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:18:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:18:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:18:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.8ms
+2026-07-17 13:18:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:18:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:18:56 [INFO] book_simulator.http: <-- GET /api/health  200  2.6ms
+2026-07-17 13:18:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:19:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:19:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:19:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:19:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:19:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:19:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:19:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:19:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:19:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:19:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:19:41 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:19:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:19:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:19:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:19:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:19:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:20:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:20:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:20:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:20:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:20:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:20:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:20:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.0ms
+2026-07-17 13:20:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:20:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:20:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:20:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:20:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:20:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:20:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:20:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:20:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:21:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:21:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:21:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.0ms
+2026-07-17 13:21:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.2ms
+2026-07-17 13:21:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:21:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:21:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:21:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.9ms
+2026-07-17 13:21:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:21:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:21:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.0ms
+2026-07-17 13:21:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:21:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:21:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:21:56 [INFO] book_simulator.http: <-- GET /api/health  200  4.0ms
+2026-07-17 13:21:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:22:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:22:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:22:11 [INFO] book_simulator.http: <-- GET /api/health  200  2.9ms
+2026-07-17 13:22:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:22:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:22:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:22:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:22:26 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:22:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:22:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:22:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.1ms
+2026-07-17 13:22:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:22:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:22:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:22:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.2ms
+2026-07-17 13:22:56 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:23:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:23:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:23:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:23:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:23:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:23:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:23:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:23:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:23:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:23:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:23:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:23:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:23:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:23:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:23:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:23:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:24:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:24:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:24:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:24:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.2ms
+2026-07-17 13:24:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:24:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:24:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.9ms
+2026-07-17 13:24:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:24:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:24:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:24:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.1ms
+2026-07-17 13:24:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.8ms
+2026-07-17 13:24:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:24:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:24:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.8ms
+2026-07-17 13:24:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:25:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:25:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:25:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:25:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.8ms
+2026-07-17 13:25:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:25:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:25:26 [INFO] book_simulator.http: <-- GET /api/health  200  1.7ms
+2026-07-17 13:25:26 [INFO] book_simulator.http: <-- GET /api/records  200  2.7ms
+2026-07-17 13:25:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:25:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:25:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.1ms
+2026-07-17 13:25:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:25:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:25:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:25:56 [INFO] book_simulator.http: <-- GET /api/health  200  2.6ms
+2026-07-17 13:25:56 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:26:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:26:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:26:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:26:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:26:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:26:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:26:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:26:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
+2026-07-17 13:26:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:26:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:26:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.1ms
+2026-07-17 13:26:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:26:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:26:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:26:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:26:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:27:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:27:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:27:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:27:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:27:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:27:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:27:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:27:26 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:27:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:27:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:27:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:27:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:27:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:27:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:27:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:27:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.8ms
+2026-07-17 13:28:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:28:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:28:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:28:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:28:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:28:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:28:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:28:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:28:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:28:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:28:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:28:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:28:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:28:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:28:56 [INFO] book_simulator.http: <-- GET /api/health  200  4.2ms
+2026-07-17 13:28:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.9ms
+2026-07-17 13:29:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:29:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:29:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.8ms
+2026-07-17 13:29:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:29:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:29:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:29:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:29:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:29:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:29:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:29:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:29:41 [INFO] book_simulator.http: <-- GET /api/records  200  3.4ms
+2026-07-17 13:29:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:29:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:29:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:29:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.0ms
+2026-07-17 13:30:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:30:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:30:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:30:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:30:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:30:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:30:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:30:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.2ms
+2026-07-17 13:30:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:30:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:30:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:30:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:30:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:30:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:30:56 [INFO] book_simulator.http: <-- GET /api/health  200  2.5ms
+2026-07-17 13:30:56 [INFO] book_simulator.http: <-- GET /api/records  200  3.0ms
+2026-07-17 13:31:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:31:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:31:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.6ms
+2026-07-17 13:31:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:31:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:31:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:31:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:31:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:31:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:31:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:31:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.2ms
+2026-07-17 13:31:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:31:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:31:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:31:56 [INFO] book_simulator.http: <-- GET /api/health  200  2.9ms
+2026-07-17 13:31:56 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:32:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:32:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:32:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.0ms
+2026-07-17 13:32:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.6ms
+2026-07-17 13:32:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:32:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:32:26 [INFO] book_simulator.http: <-- GET /api/health  200  1.8ms
+2026-07-17 13:32:26 [INFO] book_simulator.http: <-- GET /api/records  200  2.1ms
+2026-07-17 13:32:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:32:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:32:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.0ms
+2026-07-17 13:32:41 [INFO] book_simulator.http: <-- GET /api/records  200  3.8ms
+2026-07-17 13:32:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:32:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:32:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.9ms
+2026-07-17 13:32:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.3ms
+2026-07-17 13:33:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:33:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:33:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.0ms
+2026-07-17 13:33:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.7ms
+2026-07-17 13:33:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:33:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:33:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:33:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:33:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:33:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:33:41 [INFO] book_simulator.http: <-- GET /api/health  200  4.1ms
+2026-07-17 13:33:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms
+2026-07-17 13:33:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:33:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:33:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:33:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:34:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:34:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:34:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.1ms
+2026-07-17 13:34:11 [INFO] book_simulator.http: <-- GET /api/records  200  3.8ms
+2026-07-17 13:34:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:34:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:34:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:34:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.1ms
+2026-07-17 13:34:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:34:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:34:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:34:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.0ms
+2026-07-17 13:34:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:34:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:34:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
+2026-07-17 13:34:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:35:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:35:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:35:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:35:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.5ms
+2026-07-17 13:35:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:35:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:35:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.8ms
+2026-07-17 13:35:26 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:35:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:35:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:35:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:35:41 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:35:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:35:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:35:56 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:35:56 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-17 13:36:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:36:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:36:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.4ms
+2026-07-17 13:36:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.0ms
+2026-07-17 13:36:26 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:36:26 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:36:26 [INFO] book_simulator.http: <-- GET /api/health  200  3.9ms
+2026-07-17 13:36:26 [INFO] book_simulator.http: <-- GET /api/records  200  3.8ms
+2026-07-17 13:36:41 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:36:41 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:36:41 [INFO] book_simulator.http: <-- GET /api/health  200  3.5ms
+2026-07-17 13:36:41 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:36:56 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:36:56 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:36:56 [INFO] book_simulator.http: <-- GET /api/health  200  2.9ms
+2026-07-17 13:36:56 [INFO] book_simulator.http: <-- GET /api/records  200  3.9ms
+2026-07-17 13:37:11 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-17 13:37:11 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-17 13:37:11 [INFO] book_simulator.http: <-- GET /api/health  200  3.7ms
+2026-07-17 13:37:11 [INFO] book_simulator.http: <-- GET /api/records  200  4.4ms

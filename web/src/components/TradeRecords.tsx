@@ -2,6 +2,7 @@ import type { TradeRecord } from '../api';
 
 interface Props {
   trades: TradeRecord[];
+  region: string;
 }
 
 function fmt(n: number): string {
@@ -21,14 +22,14 @@ function formatDate(ts: string): string {
   });
 }
 
-export default function TradeRecords({ trades }: Props) {
+export default function TradeRecords({ trades, region }: Props) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <h3>Trading Records ({trades.length})</h3>
+      <h3>{region} · Trading Records ({trades.length})</h3>
 
       {trades.length === 0 ? (
         <div className="empty">
-          <p>No trades yet</p>
+          <p>No trades in {region} yet</p>
           <p style={{ fontSize: 12, marginTop: 8 }}>Buy or sell stocks to see records here.</p>
         </div>
       ) : (

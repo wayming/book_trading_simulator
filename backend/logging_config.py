@@ -7,16 +7,19 @@ from config import LOG_LEVEL, LOG_DIR
 
 
 def setup_logging(name: str = "book_simulator"):
-    """Configure console + file logging."""
+    """Configure console + file logging. Level read from LOG_LEVEL env var.
+    Always updates handler levels on each call."""
     logger = logging.getLogger(name)
-    logger.setLevel(getattr(logging, LOG_LEVEL.upper(), logging.INFO))
+    level = getattr(logging, LOG_LEVEL.upper(), logging.INFO)
+    logger.setLevel(level)
 
-    if logger.handlers:
-        return logger
+    # Remove any previously added handlers to avoid duplication
+    for h in list(logger.handlers):
+        logger.removeHandler(h)
 
     # Console handler
     console = logging.StreamHandler(sys.stdout)
-    console.setLevel(logging.DEBUG)
+    console.setLevel(level)
     console_fmt = logging.Formatter(
         "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
@@ -27,7 +30,7 @@ def setup_logging(name: str = "book_simulator"):
     # File handler
     os.makedirs(LOG_DIR, exist_ok=True)
     file_handler = logging.FileHandler(os.path.join(LOG_DIR, "book_simulator.log"))
-    file_handler.setLevel(logging.DEBUG)
+    file_handler.setLevel(level)
     file_handler.setFormatter(console_fmt)
     logger.addHandler(file_handler)
 

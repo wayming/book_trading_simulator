@@ -8,7 +8,10 @@ from typing import Optional
 from database import Database
 from models import TradeRecord, AccountSummary, Holding
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("book_simulator.services")
+
+# Supported regions — each gets its own fund_balance
+REGIONS = ["AU", "US", "HK", "SZ", "SH", "NL"]
 
 # Module-level iTick client cache
 _itick_client = None
@@ -29,11 +32,9 @@ def is_asx_market_open() -> tuple[bool, str, str]:
     now = get_sydney_time()
     now_str = now.strftime("%Y-%m-%d %H:%M:%S %Z")
 
-    # Check weekday
-    if now.weekday() >= 5:  # Saturday=5, Sunday=6
+    if now.weekday() >= 5:
         return False, "Market closed: ASX trading hours are Mon-Fri 10:00-16:00 AEST.", now_str
 
-    # Check trading hours
     market_open = now.replace(hour=10, minute=0, second=0, microsecond=0)
     market_close = now.replace(hour=16, minute=0, second=0, microsecond=0)
 
@@ -45,6 +46,35 @@ def is_asx_market_open() -> tuple[bool, str, str]:
     return True, "Market is open.", now_str
 
 
+#
+# Per-region fund balance helpers
+#
+
+def get_fund_balance(db: Database, region: str) -> float:
+    """Get fund balance for a specific region."""
+    return db.get_config_float(f"fund_balance_{region.upper()}", 0.0)
+
+
+def set_fund_balance(db: Database, region: str, amount: float):
+    """Set fund balance for a specific region."""
+    db.set_config(f"fund_balance_{region.upper()}", str(round(amount, 4)))
+
+
+def seed_region_funds(db: Database, initial_fund: float):
+    """Set all region fund balances to the given amount."""
+    for region in REGIONS:
+        db.set_config(f"fund_balance_{region}", str(initial_fund))
+
+
+def get_all_region_balances(db: Database) -> dict[str, float]:
+    """Return {REGION: balance} for all regions."""
+    return {r: get_fund_balance(db, r) for r in REGIONS}
+
+
+#
+# iTick client
+#
+
 def get_itick_client(token: str):
     """Get or create the iTick SDK client. Re-created if token changes."""
     global _itick_client, _itick_token
@@ -53,7 +83,7 @@ def get_itick_client(token: str):
         return _itick_client
 
     try:
-        from itick_sdk import Client
+        from itick.sdk import Client
         _itick_client = Client(token)
         _itick_token = token
         logger.info("iTick client created successfully")
@@ -67,50 +97,67 @@ def get_itick_client(token: str):
 
 
 def fetch_stock_quote(token: str, region: str, symbol: str) -> dict:
-    """Fetch live stock quote from iTick. Returns the quote dict with keys
-    like 's' (symbol), 'ld' (latest price), 'o' (open), 'h' (high), 'l' (low), 'v' (volume).
-    """
+    """Fetch live stock quote from iTick. Returns the quote dict."""
     client = get_itick_client(token)
+    region_upper = region.upper()
+    symbol_upper = symbol.upper()
+
+    logger.debug(f"[iTick REQUEST]  get_stock_quote(region='{region_upper}', code='{symbol_upper}')  token={token[:8]}...")
     try:
-        quote = client.get_stock_quote(region.upper(), symbol.upper())
+        quote = client.get_stock_quote(region_upper, symbol_upper)
         if quote is None:
             raise RuntimeError(f"No quote data returned for {region}:{symbol}")
+
+        logger.debug(
+            f"[iTick RESPONSE] {symbol_upper}  "
+            f"price={quote.get('ld')}  open={quote.get('o')}  "
+            f"high={quote.get('h')}  low={quote.get('l')}  "
+            f"volume={quote.get('v')}  change={quote.get('ch')}  "
+            f"change_pct={quote.get('chp')}%  "
+            f"raw_keys={list(quote.keys())}"
+        )
         return quote
     except Exception as e:
         logger.error(f"iTick quote error for {region}:{symbol}: {e}")
         raise RuntimeError(f"Failed to fetch quote for {symbol}: {e}")
 
 
+#
+# Trading
+#
+
 def buy_stock(db: Database, token: str, region: str, fund_amount: float, symbol: str) -> TradeRecord:
-    """Execute a buy order: query quote, calculate max shares, update holdings and fund.
+    """Execute a buy order using the region-specific fund balance."""
+    region_upper = region.upper()
+    fund_balance = get_fund_balance(db, region_upper)
 
-    Returns the trade record.
-    Raises RuntimeError on market-closed, insufficient funds, or iTick errors.
-    """
-    # 1. Check market hours
-    is_open, reason, sydney_time = is_asx_market_open()
-    if not is_open:
-        logger.warning(f"BUY rejected — {reason}")
-        raise RuntimeError(reason)
+    logger.debug(
+        f"[BUY REQUEST] region={region_upper}  fund_amount={fund_amount}  symbol={symbol}  "
+        f"fund_balance={fund_balance}"
+    )
 
-    # 2. Get current fund balance
-    fund_balance = db.get_config_float("fund_balance", 0.0)
+    # Check market hours (ASX only)
+    if region_upper == "AU":
+        is_open, reason, _ = is_asx_market_open()
+        if not is_open:
+            logger.warning(f"BUY rejected — {reason}")
+            raise RuntimeError(reason)
 
-    # 3. Validate fund_amount
+    # Validate fund_amount
     if fund_amount > fund_balance:
         raise RuntimeError(
-            f"Insufficient funds. Available: ${fund_balance:,.2f}, requested: ${fund_amount:,.2f}"
+            f"Insufficient funds in {region_upper}. Available: ${fund_balance:,.2f}, requested: ${fund_amount:,.2f}"
         )
 
-    # 4. Fetch quote
-    quote = fetch_stock_quote(token, region, symbol)
+    # Fetch quote
+    quote = fetch_stock_quote(token, region_upper, symbol)
     price = quote.get("ld")
     if price is None or price <= 0:
         raise RuntimeError(f"Invalid price ({price}) returned for {symbol}")
 
     logger.info(f"Quote for {symbol}: price=${price:.2f}")
 
-    # 5. Calculate max shares
+    # Calculate max shares
     max_shares = int(fund_amount / price)
     if max_shares == 0:
         raise RuntimeError(
@@ -118,15 +165,13 @@ def buy_stock(db: Database, token: str, region: str, fund_amount: float, symbol:
         )
 
     total_cost = max_shares * price
-
-    # 6. Update fund balance
     new_fund_balance = round(fund_balance - total_cost, 4)
-    db.set_config("fund_balance", str(new_fund_balance))
+    set_fund_balance(db, region_upper, new_fund_balance)
 
-    # 7. Upsert holding
-    db.upsert_holding(symbol, max_shares, price, total_cost)
+    # Upsert holding with region
+    db.upsert_holding(symbol, max_shares, price, total_cost, region_upper)
 
-    # 8. Record trade
+    # Record trade
     trade = db.insert_trade({
         "action": "BUY",
         "symbol": symbol.upper(),
@@ -134,10 +179,11 @@ def buy_stock(db: Database, token: str, region: str, fund_amount: float, symbol:
         "price": price,
         "total_value": total_cost,
         "fund_balance_after": new_fund_balance,
+        "region": region_upper,
     })
 
     logger.info(
-        f"BUY {max_shares} shares of {symbol} at ${price:.2f} = ${total_cost:,.2f}. "
+        f"BUY [{region_upper}] {max_shares} shares of {symbol} at ${price:.2f} = ${total_cost:,.2f}. "
         f"Fund: ${fund_balance:,.2f} → ${new_fund_balance:,.2f}"
     )
 
@@ -153,44 +199,53 @@ def buy_stock(db: Database, token: str, region: str, fund_amount: float, symbol:
     )
 
 
-def sell_stock(db: Database, token: str, symbol: str) -> TradeRecord:
-    """Sell ALL shares of a symbol at current market price.
+def sell_stock(db: Database, token: str, symbol: str, region: str = "AU") -> TradeRecord:
+    """Sell ALL shares of a symbol."""
+    region_upper = region.upper()
 
-    Returns the trade record.
-    Raises RuntimeError on market-closed, symbol not held, or iTick errors.
-    """
-    # 1. Check market hours
-    is_open, reason, sydney_time = is_asx_market_open()
-    if not is_open:
-        logger.warning(f"SELL rejected — {reason}")
-        raise RuntimeError(reason)
+    logger.debug(f"[SELL REQUEST] symbol={symbol}  region={region_upper}")
 
-    # 2. Find holding
+    # Check market hours (ASX only)
+    if region_upper == "AU":
+        is_open, reason, _ = is_asx_market_open()
+        if not is_open:
+            logger.warning(f"SELL rejected — {reason}")
+            raise RuntimeError(reason)
+
+    # Find holding
     holding = db.get_holding(symbol)
     if not holding:
         raise RuntimeError(f"No holding found for symbol '{symbol}'. Nothing to sell.")
 
-    # 3. Fetch current quote
-    quote = fetch_stock_quote(token, "AU", symbol)
+    logger.debug(
+        f"[SELL HOLDING] symbol={holding['symbol']}  quantity={holding['quantity']}  "
+        f"avg_price={holding['avg_price']}  total_cost={holding['total_cost']}  "
+        f"region={holding.get('region', 'AU')}"
+    )
+
+    # Use holding's stored region for quote
+    stored_region = holding.get("region", region_upper)
+
+    # Fetch current quote
+    quote = fetch_stock_quote(token, stored_region, symbol)
     price = quote.get("ld")
     if price is None or price <= 0:
         raise RuntimeError(f"Invalid price ({price}) returned for {symbol}")
 
     logger.info(f"Quote for {symbol}: price=${price:.2f}")
 
-    # 4. Calculate proceeds
     quantity = holding["quantity"]
     total_value = quantity * price
 
-    # 5. Update fund balance
-    fund_balance = db.get_config_float("fund_balance", 0.0)
+    # Update region-specific fund balance
+    fund_balance = get_fund_balance(db, stored_region)
     new_fund_balance = round(fund_balance + total_value, 4)
-    db.set_config("fund_balance", str(new_fund_balance))
+    set_fund_balance(db, stored_region, new_fund_balance)
 
-    # 6. Delete holding
+    # Delete holding
     db.delete_holding(symbol)
 
-    # 7. Record trade
+    # Record trade
     trade = db.insert_trade({
         "action": "SELL",
         "symbol": symbol.upper(),
@@ -198,11 +253,12 @@ def sell_stock(db: Database, token: str, symbol: str) -> TradeRecord:
         "price": price,
         "total_value": total_value,
         "fund_balance_after": new_fund_balance,
+        "region": stored_region,
     })
 
     pnl = total_value - holding["total_cost"]
     logger.info(
-        f"SELL {quantity} shares of {symbol} at ${price:.2f} = ${total_value:,.2f}. "
+        f"SELL [{stored_region}] {quantity} shares of {symbol} at ${price:.2f} = ${total_value:,.2f}. "
         f"P&L: ${pnl:,.2f}. Fund: ${fund_balance:,.2f} → ${new_fund_balance:,.2f}"
     )
 
@@ -218,10 +274,15 @@ def sell_stock(db: Database, token: str, symbol: str) -> TradeRecord:
     )
 
 
+#
+# Account summary
+#
+
 def get_account_summary(db: Database, token: str) -> AccountSummary:
-    """Build account summary with live prices for all holdings."""
+    """Build account summary with live prices and per-region fund balances."""
     initial_fund = db.get_config_float("initial_fund", 0.0)
-    fund_balance = db.get_config_float("fund_balance", initial_fund)
+    region_balances = get_all_region_balances(db)
+    total_fund_balance = sum(region_balances.values())
 
     holdings_db = db.list_holdings()
     holdings_list: list[Holding] = []
@@ -232,10 +293,10 @@ def get_account_summary(db: Database, token: str) -> AccountSummary:
         market_value = 0.0
         unrealized_pnl = 0.0
         unrealized_pnl_pct = 0.0
+        stored_region = h.get("region", "AU")
 
-        # Try to fetch live price
         try:
-            quote = fetch_stock_quote(token, "AU", h["symbol"])
+            quote = fetch_stock_quote(token, stored_region, h["symbol"])
             current_price = quote.get("ld", 0.0) or 0.0
             market_value = round(h["quantity"] * current_price, 4)
             unrealized_pnl = round(market_value - h["total_cost"], 4)
@@ -243,7 +304,6 @@ def get_account_summary(db: Database, token: str) -> AccountSummary:
                 unrealized_pnl_pct = round((unrealized_pnl / h["total_cost"]) * 100, 2)
         except Exception as e:
             logger.warning(f"Could not fetch live price for {h['symbol']}: {e}")
-            # Use avg_price as fallback
             current_price = h["avg_price"]
             market_value = h["total_cost"]
 
@@ -252,6 +312,7 @@ def get_account_summary(db: Database, token: str) -> AccountSummary:
         holdings_list.append(Holding(
             id=h["id"],
             symbol=h["symbol"],
+            region=stored_region,
             quantity=h["quantity"],
             avg_price=h["avg_price"],
             total_cost=h["total_cost"],
@@ -261,16 +322,18 @@ def get_account_summary(db: Database, token: str) -> AccountSummary:
             unrealized_pnl_pct=unrealized_pnl_pct,
         ))
 
-    total_portfolio_value = round(fund_balance + total_holdings_value, 4)
-    total_pnl = round(total_portfolio_value - initial_fund, 4)
-    total_pnl_pct = round((total_pnl / initial_fund) * 100, 2) if initial_fund > 0 else 0.0
+    total_portfolio_value = round(total_fund_balance + total_holdings_value, 4)
+    total_initial = initial_fund * len(REGIONS)
+    total_pnl = round(total_portfolio_value - total_initial, 4)
+    total_pnl_pct = round((total_pnl / total_initial) * 100, 2) if total_initial > 0 else 0.0
 
     return AccountSummary(
         initial_fund=initial_fund,
-        fund_balance=fund_balance,
+        fund_balance=total_fund_balance,
         total_holdings_value=total_holdings_value,
         total_portfolio_value=total_portfolio_value,
         total_pnl=total_pnl,
         total_pnl_pct=total_pnl_pct,
+        region_balances=region_balances,
         holdings=holdings_list,
     )

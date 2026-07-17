@@ -1,10 +1,12 @@
 """FastAPI application for Book Trading Simulator."""
 
 import logging
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.types import ASGIApp, Scope, Receive, Send
 
 import config
 from database import Database
@@ -13,6 +15,56 @@ import api_routes
 
 setup_logging("book_simulator")
 logger = logging.getLogger("book_simulator.main")
+trace_logger = logging.getLogger("book_simulator.http")
+
+# Confirm log level at startup
+_root_log = logging.getLogger("book_simulator")
+_level_name = logging.getLevelName(_root_log.level)
+logger.info(f"Log level configured: {_level_name} (set LOG_LEVEL env var to change)")
+logger.debug("DEBUG logging is ENABLED — this message confirms it works")
+
+
+class TraceMiddleware:
+    """Pure ASGI middleware — logs every HTTP request and response with timing.
+    Avoids BaseHTTPMiddleware which can interfere with FastAPI lifespan events."""
+
+    def __init__(self, app: ASGIApp):
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        start = time.perf_counter()
+        method = scope.get("method", "?")
+        path = scope.get("path", "/")
+        qs = scope.get("query_string", b"")
+        qs_str = f"?{qs.decode()}" if qs else ""
+
+        # Client IP
+        client = "unknown"
+        if scope.get("client"):
+            client = scope["client"][0]
+
+        trace_logger.info(f"--> {method} {path}{qs_str}  [client={client}]")
+
+        # Capture status code from response
+        status_code = 0
+
+        async def send_wrapper(message):
+            nonlocal status_code
+            if message["type"] == "http.response.start":
+                status_code = message["status"]
+            await send(message)
+
+        try:
+            await self.app(scope, receive, send_wrapper)
+        finally:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            trace_logger.info(
+                f"<-- {method} {path}  {status_code}  {elapsed_ms:.1f}ms"
+            )
 
 
 @asynccontextmanager
@@ -26,8 +78,8 @@ async def lifespan(app: FastAPI):
         db.set_config("initial_fund", str(config.INITIAL_FUND))
     if db.get_config("itick_token") is None:
         db.set_config("itick_token", config.ITICK_TOKEN)
-    if db.get_config("fund_balance") is None:
-        db.set_config("fund_balance", str(config.INITIAL_FUND))
+    import services
+    services.seed_region_funds(db, config.INITIAL_FUND)
 
     # Inject dependencies
     api_routes.init(db)
@@ -44,6 +96,9 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+# Trace middleware — added first (wraps all others) as raw ASGI middleware
+app.add_middleware(TraceMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
