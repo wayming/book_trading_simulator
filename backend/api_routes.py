@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Query
 from database import Database
 from models import (
     ConfigUpdate, ConfigResponse,
-    BuyRequest, SellRequest,
+    OrderRequest,
     TradeRecord, TradeRecordsResponse,
     AccountSummary,
     HealthStatus, MarketStatus,
@@ -201,23 +201,24 @@ def update_config(body: ConfigUpdate) -> ConfigResponse:
 # Trading
 #
 
-@router.post("/buy")
-def buy_stock(body: BuyRequest) -> TradeRecord:
+@router.post("/order")
+def submit_order(body: OrderRequest) -> TradeRecord:
     token = _get_token()
     if not token:
         raise HTTPException(status_code=400, detail="iTick token not configured. Please set it in Config first.")
 
     logger.debug(
-        f"[API BUY] exchange={body.exchange}  symbol={body.symbol}  "
-        f"quantity={body.quantity}  price={body.price}  order_type={body.order_type}"
+        f"[API ORDER] side={body.side}  exchange={body.exchange}  "
+        f"symbol={body.symbol}  quantity={body.quantity}  "
+        f"price={body.price}  order_type={body.order_type}"
     )
     try:
-        result = services.buy_stock(
-            db, token, body.exchange, body.symbol,
-            body.quantity, body.price, body.order_type,
+        result = services.submit_order(
+            db, token, body.exchange, body.side,
+            body.symbol, body.quantity, body.price, body.order_type,
         )
         logger.debug(
-            f"[API BUY RESPONSE] trade_id={result.trade_id}  symbol={result.symbol}  "
+            f"[API ORDER RESPONSE] trade_id={result.trade_id}  symbol={result.symbol}  "
             f"side={result.side}  filled_quantity={result.filled_quantity}  "
             f"filled_price={result.filled_price}  total_amount={result.total_amount}  "
             f"remaining_cash={result.remaining_cash}"
@@ -226,37 +227,8 @@ def buy_stock(body: BuyRequest) -> TradeRecord:
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.exception("Unexpected error in buy")
-        raise HTTPException(status_code=500, detail=f"Buy failed: {e}")
-
-
-@router.post("/sell")
-def sell_stock(body: SellRequest) -> TradeRecord:
-    token = _get_token()
-    if not token:
-        raise HTTPException(status_code=400, detail="iTick token not configured. Please set it in Config first.")
-
-    logger.debug(
-        f"[API SELL] exchange={body.exchange}  symbol={body.symbol}  "
-        f"quantity={body.quantity}  price={body.price}  order_type={body.order_type}"
-    )
-    try:
-        result = services.sell_stock(
-            db, token, body.exchange, body.symbol,
-            body.quantity, body.price, body.order_type,
-        )
-        logger.debug(
-            f"[API SELL RESPONSE] trade_id={result.trade_id}  symbol={result.symbol}  "
-            f"side={result.side}  filled_quantity={result.filled_quantity}  "
-            f"filled_price={result.filled_price}  total_amount={result.total_amount}  "
-            f"remaining_cash={result.remaining_cash}"
-        )
-        return result
-    except RuntimeError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        logger.exception("Unexpected error in sell")
-        raise HTTPException(status_code=500, detail=f"Sell failed: {e}")
+        logger.exception("Unexpected error in submit_order")
+        raise HTTPException(status_code=500, detail=f"Order failed: {e}")
 
 
 #

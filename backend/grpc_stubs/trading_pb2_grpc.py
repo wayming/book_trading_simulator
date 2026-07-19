@@ -44,14 +44,9 @@ class TradingServiceStub:
                 request_serializer=trading__pb2.GetQuoteRequest.SerializeToString,
                 response_deserializer=trading__pb2.GetQuoteResponse.FromString,
                 _registered_method=True)
-        self.BuyStock = channel.unary_unary(
-                '/trading.TradingService/BuyStock',
-                request_serializer=trading__pb2.BuyStockRequest.SerializeToString,
-                response_deserializer=trading__pb2.TradeResponse.FromString,
-                _registered_method=True)
-        self.SellStock = channel.unary_unary(
-                '/trading.TradingService/SellStock',
-                request_serializer=trading__pb2.SellStockRequest.SerializeToString,
+        self.SubmitOrder = channel.unary_unary(
+                '/trading.TradingService/SubmitOrder',
+                request_serializer=trading__pb2.OrderRequest.SerializeToString,
                 response_deserializer=trading__pb2.TradeResponse.FromString,
                 _registered_method=True)
         self.ViewPortfolio = channel.unary_unary(
@@ -78,15 +73,8 @@ class TradingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def BuyStock(self, request, context):
-        """买入股票
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def SellStock(self, request, context):
-        """卖出股票
+    def SubmitOrder(self, request, context):
+        """提交订单（买入 / 卖出）
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -112,14 +100,9 @@ def add_TradingServiceServicer_to_server(servicer, server):
                     request_deserializer=trading__pb2.GetQuoteRequest.FromString,
                     response_serializer=trading__pb2.GetQuoteResponse.SerializeToString,
             ),
-            'BuyStock': grpc.unary_unary_rpc_method_handler(
-                    servicer.BuyStock,
-                    request_deserializer=trading__pb2.BuyStockRequest.FromString,
-                    response_serializer=trading__pb2.TradeResponse.SerializeToString,
-            ),
-            'SellStock': grpc.unary_unary_rpc_method_handler(
-                    servicer.SellStock,
-                    request_deserializer=trading__pb2.SellStockRequest.FromString,
+            'SubmitOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitOrder,
+                    request_deserializer=trading__pb2.OrderRequest.FromString,
                     response_serializer=trading__pb2.TradeResponse.SerializeToString,
             ),
             'ViewPortfolio': grpc.unary_unary_rpc_method_handler(
@@ -193,7 +176,7 @@ class TradingService:
             _registered_method=True)
 
     @staticmethod
-    def BuyStock(request,
+    def SubmitOrder(request,
             target,
             options=(),
             channel_credentials=None,
@@ -206,35 +189,8 @@ class TradingService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/trading.TradingService/BuyStock',
-            trading__pb2.BuyStockRequest.SerializeToString,
-            trading__pb2.TradeResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def SellStock(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/trading.TradingService/SellStock',
-            trading__pb2.SellStockRequest.SerializeToString,
+            '/trading.TradingService/SubmitOrder',
+            trading__pb2.OrderRequest.SerializeToString,
             trading__pb2.TradeResponse.FromString,
             options,
             channel_credentials,

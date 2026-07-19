@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
 interface Props {
-  onSell: (exchange: string, symbol: string, quantity: number, price: number, orderType: string) => Promise<void>;
+  onSubmit: (side: string, exchange: string, symbol: string, quantity: number, price: number, orderType: string) => Promise<void>;
   defaultExchange?: string;
 }
 
-export default function SellForm({ onSell, defaultExchange = 'AU' }: Props) {
+export default function SellForm({ onSubmit, defaultExchange = 'AU' }: Props) {
   const [exchange, setExchange] = useState(defaultExchange);
   useEffect(() => { setExchange(defaultExchange); }, [defaultExchange]);
   const [symbol, setSymbol] = useState('');
@@ -36,7 +36,7 @@ export default function SellForm({ onSell, defaultExchange = 'AU' }: Props) {
 
     setLoading(true);
     try {
-      await onSell(exchange, symbol.trim().toUpperCase(), qty, isNaN(prc) ? 0 : prc, orderType);
+      await onSubmit("SELL", exchange, symbol.trim().toUpperCase(), qty, isNaN(prc) ? 0 : prc, orderType);
       setMessage({ type: 'success', text: `Sell order executed for ${symbol.trim().toUpperCase()}` });
       setSymbol('');
       setQuantity('');

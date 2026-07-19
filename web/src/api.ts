@@ -25,20 +25,13 @@ export interface ConfigUpdate {
   itick_token: string;
 }
 
-export interface BuyRequest {
+export interface OrderRequest {
   exchange: string;
+  side: string;          // "BUY" | "SELL"
   symbol: string;
   quantity: number;
   price: number;
-  order_type: string;   // "MARKET" | "LIMIT"
-}
-
-export interface SellRequest {
-  exchange: string;
-  symbol: string;
-  quantity: number;
-  price: number;
-  order_type: string;   // "MARKET" | "LIMIT"
+  order_type: string;    // "MARKET" | "LIMIT"
 }
 
 export interface TradeRecord {
@@ -139,28 +132,15 @@ export async function updateConfig(cfg: ConfigUpdate): Promise<ConfigResponse> {
   return res.json();
 }
 
-export async function buyStock(req: BuyRequest): Promise<TradeRecord> {
-  const res = await fetch(`${BASE}/buy`, {
+export async function submitOrder(req: OrderRequest): Promise<TradeRecord> {
+  const res = await fetch(`${BASE}/order`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
   });
   if (!res.ok) {
     const err = await res.json();
-    throw new Error(err.detail || 'Buy failed');
-  }
-  return res.json();
-}
-
-export async function sellStock(req: SellRequest): Promise<TradeRecord> {
-  const res = await fetch(`${BASE}/sell`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(req),
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.detail || 'Sell failed');
+    throw new Error(err.detail || 'Order failed');
   }
   return res.json();
 }

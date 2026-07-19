@@ -13,11 +13,8 @@ service TradingService {
   // 获取某只股票的实时报价
   rpc GetQuote(GetQuoteRequest) returns (GetQuoteResponse);
 
-  // 买入股票
-  rpc BuyStock(BuyStockRequest) returns (TradeResponse);
-
-  // 卖出股票
-  rpc SellStock(SellStockRequest) returns (TradeResponse);
+  // 提交订单（买入 / 卖出）
+  rpc SubmitOrder(OrderRequest) returns (TradeResponse);
 
   // 查看账户持仓、现金、持仓价值
   rpc ViewPortfolio(ViewPortfolioRequest) returns (ViewPortfolioResponse);
@@ -56,21 +53,14 @@ message GetQuoteResponse {
   double change_pct = 11;             // 涨跌幅百分比
 }
 
-// ==================== Buy / Sell ====================
-message BuyStockRequest {
-  string exchange = 1;
-  string symbol = 2;
-  int32 quantity = 3;      // 买入数量
-  double price = 4;        // 买入价格（限价单）
-  OrderType order_type = 5; // 订单类型
-}
-
-message SellStockRequest {
-  string exchange = 1;
-  string symbol = 2;
-  int32 quantity = 3;      // 卖出数量
-  double price = 4;        // 卖出价格（限价单）
-  OrderType order_type = 5; // 订单类型
+// ==================== SubmitOrder ====================
+message OrderRequest {
+  string exchange = 1;       // 交易所
+  OrderSide side = 2;        // BUY or SELL
+  string symbol = 3;         // 股票代码
+  int32 quantity = 4;        // 数量
+  OrderType order_type = 5;  // 订单类型
+  double price = 6;          // 价格（限价单时使用）
 }
 
 enum OrderType {

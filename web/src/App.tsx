@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  fetchHealth, fetchConfig, fetchRecords, updateConfig, buyStock, sellStock,
+  fetchHealth, fetchConfig, fetchRecords, updateConfig, submitOrder,
   type ConfigResponse, type ConfigUpdate, type TradeRecord, type TradeRecordsResponse,
 } from './api';
 import Header from './components/Header';
@@ -63,13 +63,8 @@ export default function App() {
     return result;
   }, []);
 
-  const handleBuy = useCallback(async (exchange: string, quantity: number, price: number, orderType: string, symbol: string) => {
-    await buyStock({ exchange, symbol, quantity, price, order_type: orderType });
-    await refreshData();
-  }, [refreshData]);
-
-  const handleSell = useCallback(async (exchange: string, symbol: string, quantity: number, price: number, orderType: string) => {
-    await sellStock({ exchange, symbol, quantity, price, order_type: orderType });
+  const handleOrder = useCallback(async (side: string, exchange: string, symbol: string, quantity: number, price: number, orderType: string) => {
+    await submitOrder({ side, exchange, symbol, quantity, price, order_type: orderType });
     await refreshData();
   }, [refreshData]);
 
@@ -104,8 +99,8 @@ export default function App() {
         {/* Column 1: Quote + Buy + Sell */}
         <div className="col">
           <QuoteForm defaultExchange={activeExchange} />
-          <BuyForm onBuy={handleBuy} defaultExchange={activeExchange} />
-          <SellForm onSell={handleSell} defaultExchange={activeExchange} />
+          <BuyForm onSubmit={handleOrder} defaultExchange={activeExchange} />
+          <SellForm onSubmit={handleOrder} defaultExchange={activeExchange} />
         </div>
 
         {/* Column 2: Account Summary */}

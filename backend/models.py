@@ -20,22 +20,15 @@ class ConfigResponse(BaseModel):
 
 
 #
-# Trading — aligned with proto BuyStockRequest / SellStockRequest
+# Trading — aligned with proto OrderRequest
 #
 
-class BuyRequest(BaseModel):
+class OrderRequest(BaseModel):
     exchange: str = "AU"
+    side: str = "BUY"            # "BUY" | "SELL"
     symbol: str
     quantity: int
-    price: float
-    order_type: str = "MARKET"   # "MARKET" | "LIMIT"
-
-
-class SellRequest(BaseModel):
-    exchange: str = "AU"
-    symbol: str
-    quantity: int
-    price: float
+    price: float = 0.0
     order_type: str = "MARKET"   # "MARKET" | "LIMIT"
 
 

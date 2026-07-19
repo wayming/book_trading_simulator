@@ -29,6 +29,11 @@ _ORDER_TYPE_TO_STR = {
     trading_pb2.LIMIT: "LIMIT",
 }
 
+_ORDER_SIDE_TO_STR = {
+    trading_pb2.BUY: "BUY",
+    trading_pb2.SELL: "SELL",
+}
+
 _ORDER_SIDE_TO_PROTO = {
     "BUY": trading_pb2.BUY,
     "SELL": trading_pb2.SELL,
@@ -181,58 +186,32 @@ class GrpcTradingService(trading_pb2_grpc.TradingServiceServicer):
             change_pct=q.get("change_pct", 0.0) or 0.0,
         )
 
-    # ── BuyStock ──────────────────────────────────────────
+    # ── SubmitOrder ───────────────────────────────────────
 
-    def BuyStock(self, request: trading_pb2.BuyStockRequest, context):
+    def SubmitOrder(self, request: trading_pb2.OrderRequest, context):
         token = self._get_token(context)
         exchange = request.exchange or "AU"
+        side = _ORDER_SIDE_TO_STR.get(request.side, "BUY")
         symbol = request.symbol.upper()
         quantity = request.quantity
         price = request.price
         order_type = _ORDER_TYPE_TO_STR.get(request.order_type, "MARKET")
 
         logger.debug(
-            f"[gRPC BuyStock] exchange={exchange}  symbol={symbol}  "
-            f"quantity={quantity}  price={price}  order_type={order_type}"
+            f"[gRPC SubmitOrder] side={side}  exchange={exchange}  "
+            f"symbol={symbol}  quantity={quantity}  price={price}  "
+            f"order_type={order_type}"
         )
 
         try:
-            result = services.buy_stock(
-                self._db, token, exchange, symbol,
-                quantity, price, order_type,
+            result = services.submit_order(
+                self._db, token, exchange, side,
+                symbol, quantity, price, order_type,
             )
         except RuntimeError as e:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(e))
         except Exception as e:
-            logger.exception("gRPC BuyStock error")
-            context.abort(grpc.StatusCode.INTERNAL, str(e))
-
-        return _trade_to_proto(result)
-
-    # ── SellStock ─────────────────────────────────────────
-
-    def SellStock(self, request: trading_pb2.SellStockRequest, context):
-        token = self._get_token(context)
-        exchange = request.exchange or "AU"
-        symbol = request.symbol.upper()
-        quantity = request.quantity
-        price = request.price
-        order_type = _ORDER_TYPE_TO_STR.get(request.order_type, "MARKET")
-
-        logger.debug(
-            f"[gRPC SellStock] exchange={exchange}  symbol={symbol}  "
-            f"quantity={quantity}  price={price}  order_type={order_type}"
-        )
-
-        try:
-            result = services.sell_stock(
-                self._db, token, exchange, symbol,
-                quantity, price, order_type,
-            )
-        except RuntimeError as e:
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(e))
-        except Exception as e:
-            logger.exception("gRPC SellStock error")
+            logger.exception("gRPC SubmitOrder error")
             context.abort(grpc.StatusCode.INTERNAL, str(e))
 
         return _trade_to_proto(result)

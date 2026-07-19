@@ -139,6 +139,18 @@ def fetch_stock_quote(token: str, exchange: str, symbol: str) -> dict:
 # Trading
 #
 
+def submit_order(db: Database, token: str, exchange: str, side: str,
+                 symbol: str, quantity: int, price: float, order_type: str) -> TradeRecord:
+    """Submit a buy or sell order. Dispatches to buy_stock / sell_stock based on side."""
+    side_upper = side.upper()
+    if side_upper == "BUY":
+        return buy_stock(db, token, exchange, symbol, quantity, price, order_type)
+    elif side_upper == "SELL":
+        return sell_stock(db, token, exchange, symbol, quantity, price, order_type)
+    else:
+        raise RuntimeError(f"Unknown order side: {side}. Must be BUY or SELL.")
+
+
 def buy_stock(db: Database, token: str, exchange: str, symbol: str,
               quantity: int, price: float, order_type: str) -> TradeRecord:
     """Execute a buy order. Uses quantity + price (proto-aligned)."""
