@@ -12,6 +12,12 @@ services:
     volumes:
       - backend_data:/app/data
       - backend_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; s=socket.socket(); s.connect(('localhost',50051)); s.close()"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
     restart: unless-stopped
 
   web:

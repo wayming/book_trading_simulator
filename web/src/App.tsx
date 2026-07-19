@@ -11,11 +11,11 @@ import QuoteForm from './components/QuoteForm';
 import AccountSummary from './components/AccountSummary';
 import TradeRecords from './components/TradeRecords';
 
-const REGIONS = ['AU', 'US', 'HK', 'SZ', 'SH', 'NL'];
+const EXCHANGES = ['AU', 'US', 'HK', 'SZ', 'SH', 'NL'];
 const MAX_ITEMS = 200;
 
 export default function App() {
-  const [activeRegion, setActiveRegion] = useState('AU');
+  const [activeExchange, setActiveExchange] = useState('AU');
   const [config, setConfig] = useState<ConfigResponse | null>(null);
   const [configOpen, setConfigOpen] = useState(false);
   const [data, setData] = useState<TradeRecordsResponse | null>(null);
@@ -63,20 +63,20 @@ export default function App() {
     return result;
   }, []);
 
-  const handleBuy = useCallback(async (region: string, fundAmount: number, symbol: string) => {
-    await buyStock({ region, fund_amount: fundAmount, symbol });
+  const handleBuy = useCallback(async (exchange: string, quantity: number, price: number, orderType: string, symbol: string) => {
+    await buyStock({ exchange, symbol, quantity, price, order_type: orderType });
     await refreshData();
   }, [refreshData]);
 
-  const handleSell = useCallback(async (symbol: string, region: string) => {
-    await sellStock({ symbol, region });
+  const handleSell = useCallback(async (exchange: string, symbol: string, quantity: number, price: number, orderType: string) => {
+    await sellStock({ exchange, symbol, quantity, price, order_type: orderType });
     await refreshData();
   }, [refreshData]);
 
-  // Filter trades by active region
-  const regionTrades = useMemo(
-    () => trades.filter(t => t.region === activeRegion),
-    [trades, activeRegion]
+  // Filter trades by active exchange
+  const exchangeTrades = useMemo(
+    () => trades.filter(t => t.exchange === activeExchange),
+    [trades, activeExchange]
   );
 
   return (
@@ -87,13 +87,13 @@ export default function App() {
         onToggleConfig={() => setConfigOpen(prev => !prev)}
       />
 
-      {/* Region tabs */}
+      {/* Exchange tabs */}
       <div className="tab-bar">
-        {REGIONS.map(r => (
+        {EXCHANGES.map(r => (
           <button
             key={r}
-            className={`tab${r === activeRegion ? ' active' : ''}`}
-            onClick={() => setActiveRegion(r)}
+            className={`tab${r === activeExchange ? ' active' : ''}`}
+            onClick={() => setActiveExchange(r)}
           >
             {r}
           </button>
@@ -103,19 +103,19 @@ export default function App() {
       <div className="layout" style={{ height: 'calc(100vh - 48px - 45px)' }}>
         {/* Column 1: Quote + Buy + Sell */}
         <div className="col">
-          <QuoteForm defaultRegion={activeRegion} />
-          <BuyForm onBuy={handleBuy} defaultRegion={activeRegion} />
-          <SellForm onSell={handleSell} defaultRegion={activeRegion} />
+          <QuoteForm defaultExchange={activeExchange} />
+          <BuyForm onBuy={handleBuy} defaultExchange={activeExchange} />
+          <SellForm onSell={handleSell} defaultExchange={activeExchange} />
         </div>
 
         {/* Column 2: Account Summary */}
         <div className="col">
-          <AccountSummary account={data?.account ?? null} region={activeRegion} />
+          <AccountSummary account={data?.account ?? null} exchange={activeExchange} />
         </div>
 
         {/* Column 3: Trade Records */}
         <div className="col">
-          <TradeRecords trades={regionTrades} region={activeRegion} />
+          <TradeRecords trades={exchangeTrades} exchange={activeExchange} />
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-"""FastAPI routes for Book Trading Simulator."""
+"""FastAPI routes for Book Trading Simulator — aligned with proto/trading/trading.proto."""
 
 import logging
 from typing import Optional
@@ -128,35 +128,36 @@ def get_market_status() -> MarketStatus:
 #
 
 @router.get("/quote")
-def get_quote(region: str = Query("AU"), symbol: str = Query(...)) -> QuoteResponse:
+def get_quote(exchange: str = Query("AU"), symbol: str = Query(...)) -> QuoteResponse:
     """Fetch a live stock quote. No trading — works regardless of market hours."""
     token = _get_token()
     if not token:
         raise HTTPException(status_code=400, detail="iTick token not configured. Please set it in Config first.")
 
-    logger.debug(f"[API QUOTE] region={region}  symbol={symbol}")
+    logger.debug(f"[API QUOTE] exchange={exchange}  symbol={symbol}")
 
     try:
-        quote = services.fetch_stock_quote(token, region, symbol)
+        quote = services.fetch_stock_quote(token, exchange, symbol)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Quote failed: {e}")
 
     from datetime import datetime, timezone
     result = QuoteResponse(
+        exchange=exchange.upper(),
         symbol=symbol.upper(),
-        region=region.upper(),
-        price=quote.get("ld", 0.0) or 0.0,
-        open=quote.get("o", 0.0) or 0.0,
-        high=quote.get("h", 0.0) or 0.0,
-        low=quote.get("l", 0.0) or 0.0,
-        volume=quote.get("v", 0.0) or 0.0,
-        change=quote.get("ch", 0.0) or 0.0,
-        change_pct=quote.get("chp", 0.0) or 0.0,
+        current_price=quote.get("current_price", 0.0) or 0.0,
+        open_price=quote.get("open_price", 0.0) or 0.0,
+        high_price=quote.get("high_price", 0.0) or 0.0,
+        low_price=quote.get("low_price", 0.0) or 0.0,
+        previous_close=quote.get("previous_close", 0.0) or 0.0,
+        volume=quote.get("volume", 0.0) or 0.0,
+        change=quote.get("change", 0.0) or 0.0,
+        change_pct=quote.get("change_pct", 0.0) or 0.0,
         timestamp=datetime.now(timezone.utc).isoformat(),
     )
     logger.debug(
-        f"[API QUOTE RESPONSE] symbol={result.symbol}  price={result.price}  "
-        f"open={result.open}  high={result.high}  low={result.low}  "
+        f"[API QUOTE RESPONSE] symbol={result.symbol}  current_price={result.current_price}  "
+        f"open_price={result.open_price}  high_price={result.high_price}  low_price={result.low_price}  "
         f"volume={result.volume}  change={result.change}"
     )
     return result
@@ -170,10 +171,10 @@ def get_quote(region: str = Query("AU"), symbol: str = Query(...)) -> QuoteRespo
 def get_config() -> ConfigResponse:
     initial_fund = db.get_config_float("initial_fund", 0.0)
     token = _get_token()
-    balances = services.get_all_region_balances(db)
+    balances = services.get_all_exchange_balances(db)
     return ConfigResponse(
         initial_fund=initial_fund,
-        region_balances=balances,
+        exchange_balances=balances,
         itick_token_masked=_mask_token(token),
     )
 
@@ -185,13 +186,13 @@ def update_config(body: ConfigUpdate) -> ConfigResponse:
     db.set_config("itick_token", body.itick_token)
     _token_cache = body.itick_token
 
-    # Seed all region fund balances to initial_fund
-    services.seed_region_funds(db, body.initial_fund)
+    # Seed all exchange fund balances to initial_fund
+    services.seed_exchange_funds(db, body.initial_fund)
 
-    balances = services.get_all_region_balances(db)
+    balances = services.get_all_exchange_balances(db)
     return ConfigResponse(
         initial_fund=body.initial_fund,
-        region_balances=balances,
+        exchange_balances=balances,
         itick_token_masked=_mask_token(body.itick_token),
     )
 
@@ -207,15 +208,19 @@ def buy_stock(body: BuyRequest) -> TradeRecord:
         raise HTTPException(status_code=400, detail="iTick token not configured. Please set it in Config first.")
 
     logger.debug(
-        f"[API BUY] region={body.region}  fund_amount={body.fund_amount}  "
-        f"symbol={body.symbol}"
+        f"[API BUY] exchange={body.exchange}  symbol={body.symbol}  "
+        f"quantity={body.quantity}  price={body.price}  order_type={body.order_type}"
     )
     try:
-        result = services.buy_stock(db, token, body.region, body.fund_amount, body.symbol)
+        result = services.buy_stock(
+            db, token, body.exchange, body.symbol,
+            body.quantity, body.price, body.order_type,
+        )
         logger.debug(
-            f"[API BUY RESPONSE] id={result.id}  symbol={result.symbol}  "
-            f"qty={result.quantity}  price={result.price}  "
-            f"total={result.total_value}  fund_after={result.fund_balance_after}"
+            f"[API BUY RESPONSE] trade_id={result.trade_id}  symbol={result.symbol}  "
+            f"side={result.side}  filled_quantity={result.filled_quantity}  "
+            f"filled_price={result.filled_price}  total_amount={result.total_amount}  "
+            f"remaining_cash={result.remaining_cash}"
         )
         return result
     except RuntimeError as e:
@@ -231,13 +236,20 @@ def sell_stock(body: SellRequest) -> TradeRecord:
     if not token:
         raise HTTPException(status_code=400, detail="iTick token not configured. Please set it in Config first.")
 
-    logger.debug(f"[API SELL] symbol={body.symbol}  region={body.region}")
+    logger.debug(
+        f"[API SELL] exchange={body.exchange}  symbol={body.symbol}  "
+        f"quantity={body.quantity}  price={body.price}  order_type={body.order_type}"
+    )
     try:
-        result = services.sell_stock(db, token, body.symbol, body.region)
+        result = services.sell_stock(
+            db, token, body.exchange, body.symbol,
+            body.quantity, body.price, body.order_type,
+        )
         logger.debug(
-            f"[API SELL RESPONSE] id={result.id}  symbol={result.symbol}  "
-            f"qty={result.quantity}  price={result.price}  "
-            f"total={result.total_value}  fund_after={result.fund_balance_after}"
+            f"[API SELL RESPONSE] trade_id={result.trade_id}  symbol={result.symbol}  "
+            f"side={result.side}  filled_quantity={result.filled_quantity}  "
+            f"filled_price={result.filled_price}  total_amount={result.total_amount}  "
+            f"remaining_cash={result.remaining_cash}"
         )
         return result
     except RuntimeError as e:
@@ -255,15 +267,28 @@ def sell_stock(body: SellRequest) -> TradeRecord:
 def list_records(
     limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    region: str = Query(None),
+    exchange: str = Query(None),
 ) -> TradeRecordsResponse:
-    trades_raw = db.list_trades(limit, offset, region=region)
+    trades_raw = db.list_trades(limit, offset, region=exchange)
     trades = []
     for t in trades_raw:
         d = dict(t)
-        if not d.get("region"):
-            d["region"] = "AU"
-        trades.append(TradeRecord(**d))
+        if not d.get("exchange"):
+            d["exchange"] = d.get("region", "AU")
+        trades.append(TradeRecord(
+            trade_id=d.get("id", ""),
+            status="FILLED",
+            exchange=d.get("exchange", "AU"),
+            symbol=d.get("symbol", ""),
+            side=d.get("action", "BUY"),
+            filled_quantity=d.get("quantity", 0),
+            filled_price=d.get("price", 0.0),
+            total_amount=d.get("total_value", 0.0),
+            commission=0.0,
+            remaining_cash=d.get("fund_balance_after", 0.0),
+            message="",
+            executed_at=d.get("timestamp", ""),
+        ))
 
     token = _get_token()
     try:
@@ -271,19 +296,19 @@ def list_records(
     except Exception:
         # Fallback if iTick is unavailable
         initial_fund = db.get_config_float("initial_fund", 0.0)
-        fund_balance = db.get_config_float("fund_balance", initial_fund)
-        balances = services.get_all_region_balances(db)
-        total_fb = sum(balances.values())
-        total_initial = initial_fund * len(services.REGIONS)
+        balances = services.get_all_exchange_balances(db)
+        total_cash = sum(balances.values())
+        total_initial = initial_fund * len(services.EXCHANGES)
         account = AccountSummary(
-            initial_fund=initial_fund,
-            fund_balance=total_fb,
-            total_holdings_value=0.0,
-            total_portfolio_value=total_fb,
-            total_pnl=total_fb - total_initial,
-            total_pnl_pct=((total_fb - total_initial) / total_initial * 100) if total_initial > 0 else 0.0,
-            region_balances=balances,
+            exchange="",
+            cash=total_cash,
             holdings=[],
+            total_holdings_value=0.0,
+            total_portfolio_value=total_cash,
+            total_unrealized_pnl=total_cash - total_initial,
+            total_unrealized_pnl_pct=((total_cash - total_initial) / total_initial * 100) if total_initial > 0 else 0.0,
+            initial_fund=initial_fund,
+            exchange_balances=balances,
         )
 
     return TradeRecordsResponse(trades=trades, account=account)
@@ -298,16 +323,17 @@ def get_account() -> AccountSummary:
         # Fallback if iTick is unavailable
         logger.warning(f"Account summary fallback (iTick unavailable): {e}")
         initial_fund = db.get_config_float("initial_fund", 0.0)
-        balances = services.get_all_region_balances(db)
-        total_fb = sum(balances.values())
-        total_initial = initial_fund * len(services.REGIONS)
+        balances = services.get_all_exchange_balances(db)
+        total_cash = sum(balances.values())
+        total_initial = initial_fund * len(services.EXCHANGES)
         return AccountSummary(
-            initial_fund=initial_fund,
-            fund_balance=total_fb,
-            total_holdings_value=0.0,
-            total_portfolio_value=total_fb,
-            total_pnl=total_fb - total_initial,
-            total_pnl_pct=((total_fb - total_initial) / total_initial * 100) if total_initial > 0 else 0.0,
-            region_balances=balances,
+            exchange="",
+            cash=total_cash,
             holdings=[],
+            total_holdings_value=0.0,
+            total_portfolio_value=total_cash,
+            total_unrealized_pnl=total_cash - total_initial,
+            total_unrealized_pnl_pct=((total_cash - total_initial) / total_initial * 100) if total_initial > 0 else 0.0,
+            initial_fund=initial_fund,
+            exchange_balances=balances,
         )

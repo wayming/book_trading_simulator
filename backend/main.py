@@ -2,8 +2,10 @@
 
 import logging
 import time
+from concurrent import futures
 from contextlib import asynccontextmanager
 
+import grpc
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Scope, Receive, Send
@@ -12,6 +14,12 @@ import config
 from database import Database
 from logging_config import setup_logging
 import api_routes
+
+# gRPC imports — add stubs path before importing generated code
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "grpc_stubs"))
+import trading_pb2_grpc
+from grpc_server import GrpcTradingService
 
 setup_logging("book_simulator")
 logger = logging.getLogger("book_simulator.main")
@@ -79,14 +87,25 @@ async def lifespan(app: FastAPI):
     if db.get_config("itick_token") is None:
         db.set_config("itick_token", config.ITICK_TOKEN)
     import services
-    services.seed_region_funds(db, config.INITIAL_FUND)
+    services.seed_exchange_funds(db, config.INITIAL_FUND)
 
     # Inject dependencies
     api_routes.init(db)
 
+    # Start gRPC server on port 50051
+    grpc_server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    trading_pb2_grpc.add_TradingServiceServicer_to_server(
+        GrpcTradingService(db), grpc_server
+    )
+    grpc_server.add_insecure_port("0.0.0.0:50051")
+    grpc_server.start()
+    logger.info("gRPC server listening on port 50051")
+
     logger.info("Book Trading Simulator backend ready.")
     yield
 
+    # Shutdown
+    grpc_server.stop(grace=5)
     db.close()
     logger.info("Book Trading Simulator shutdown complete.")
 

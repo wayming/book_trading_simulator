@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 
 interface Props {
-  onBuy: (region: string, fundAmount: number, symbol: string) => Promise<void>;
-  defaultRegion?: string;
+  onBuy: (exchange: string, quantity: number, price: number, orderType: string, symbol: string) => Promise<void>;
+  defaultExchange?: string;
 }
 
-export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
-  const [region, setRegion] = useState(defaultRegion);
-  useEffect(() => { setRegion(defaultRegion); }, [defaultRegion]);
-  const [fundAmount, setFundAmount] = useState('');
+export default function BuyForm({ onBuy, defaultExchange = 'AU' }: Props) {
+  const [exchange, setExchange] = useState(defaultExchange);
+  useEffect(() => { setExchange(defaultExchange); }, [defaultExchange]);
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [orderType, setOrderType] = useState('MARKET');
   const [symbol, setSymbol] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
@@ -17,9 +19,14 @@ export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
     e.preventDefault();
     setMessage(null);
 
-    const amount = parseFloat(fundAmount);
-    if (isNaN(amount) || amount <= 0) {
-      setMessage({ type: 'error', text: 'Fund amount must be a positive number.' });
+    const qty = parseInt(quantity);
+    if (isNaN(qty) || qty <= 0) {
+      setMessage({ type: 'error', text: 'Quantity must be a positive integer.' });
+      return;
+    }
+    const prc = parseFloat(price);
+    if (orderType === 'LIMIT' && (isNaN(prc) || prc <= 0)) {
+      setMessage({ type: 'error', text: 'Limit price must be a positive number.' });
       return;
     }
     if (!symbol.trim()) {
@@ -29,9 +36,10 @@ export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
 
     setLoading(true);
     try {
-      await onBuy(region, amount, symbol.trim().toUpperCase());
+      await onBuy(exchange, qty, isNaN(prc) ? 0 : prc, orderType, symbol.trim().toUpperCase());
       setMessage({ type: 'success', text: `Buy order executed for ${symbol.trim().toUpperCase()}` });
-      setFundAmount('');
+      setQuantity('');
+      setPrice('');
       setSymbol('');
     } catch (e) {
       setMessage({ type: 'error', text: e instanceof Error ? e.message : 'Buy failed' });
@@ -45,8 +53,8 @@ export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
       <h3>Buy Stock</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Region</label>
-          <select value={region} onChange={e => setRegion(e.target.value)} style={{ width: '100%' }}>
+          <label>Exchange</label>
+          <select value={exchange} onChange={e => setExchange(e.target.value)} style={{ width: '100%' }}>
             <option value="AU">AU — Australia (ASX)</option>
             <option value="US">US — United States</option>
             <option value="HK">HK — Hong Kong</option>
@@ -54,19 +62,6 @@ export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
             <option value="SH">SH — Shanghai</option>
             <option value="NL">NL — Netherlands</option>
           </select>
-        </div>
-
-        <div className="form-group">
-          <label>Fund Amount ($)</label>
-          <input
-            type="number"
-            value={fundAmount}
-            onChange={e => setFundAmount(e.target.value)}
-            placeholder="e.g. 5000"
-            min="0"
-            step="100"
-            style={{ width: '100%' }}
-          />
         </div>
 
         <div className="form-group">
@@ -79,6 +74,42 @@ export default function BuyForm({ onBuy, defaultRegion = 'AU' }: Props) {
             style={{ width: '100%', textTransform: 'uppercase' }}
           />
         </div>
+
+        <div className="form-group">
+          <label>Quantity (shares)</label>
+          <input
+            type="number"
+            value={quantity}
+            onChange={e => setQuantity(e.target.value)}
+            placeholder="e.g. 100"
+            min="1"
+            step="1"
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Order Type</label>
+          <select value={orderType} onChange={e => setOrderType(e.target.value)} style={{ width: '100%' }}>
+            <option value="MARKET">Market</option>
+            <option value="LIMIT">Limit</option>
+          </select>
+        </div>
+
+        {orderType === 'LIMIT' && (
+          <div className="form-group">
+            <label>Limit Price ($)</label>
+            <input
+              type="number"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              placeholder="e.g. 95.50"
+              min="0"
+              step="0.01"
+              style={{ width: '100%' }}
+            />
+          </div>
+        )}
 
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? 'Buying...' : 'Buy'}

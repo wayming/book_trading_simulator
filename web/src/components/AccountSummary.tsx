@@ -2,39 +2,39 @@ import type { AccountSummary as AccountSummaryType } from '../api';
 
 interface Props {
   account: AccountSummaryType | null;
-  region: string;
+  exchange: string;
 }
 
 function fmt(n: number): string {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export default function AccountSummary({ account, region }: Props) {
+export default function AccountSummary({ account, exchange }: Props) {
   if (!account) {
     return (
       <div className="card" style={{ flex: 1 }}>
-        <h3>{region} · Account</h3>
+        <h3>{exchange} · Account</h3>
         <div className="empty">Loading...</div>
       </div>
     );
   }
 
-  const regionBalance = account.region_balances[region] ?? 0;
-  const regionHoldings = account.holdings.filter(h => h.region === region);
-  const holdingsValue = regionHoldings.reduce((sum, h) => sum + h.market_value, 0);
-  const portfolioValue = regionBalance + holdingsValue;
+  const exchangeBalance = account.exchange_balances[exchange] ?? 0;
+  const exchangeHoldings = account.holdings.filter(h => h.exchange === exchange);
+  const holdingsValue = exchangeHoldings.reduce((sum, h) => sum + h.market_value, 0);
+  const portfolioValue = exchangeBalance + holdingsValue;
   const pnl = portfolioValue - account.initial_fund;
   const pnlPct = account.initial_fund > 0 ? (pnl / account.initial_fund) * 100 : 0;
 
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      <h3>{region} · Account</h3>
+      <h3>{exchange} · Account</h3>
 
       {/* Key metrics */}
       <div className="stats" style={{ marginBottom: 12 }}>
         <div className="stat">
-          <div className="val">${fmt(regionBalance)}</div>
-          <div className="lbl">Fund Balance</div>
+          <div className="val">${fmt(exchangeBalance)}</div>
+          <div className="lbl">Cash</div>
         </div>
         <div className="stat">
           <div className="val">${fmt(holdingsValue)}</div>
@@ -53,14 +53,14 @@ export default function AccountSummary({ account, region }: Props) {
       </div>
 
       {/* Holdings */}
-      <h3 style={{ marginTop: 4 }}>Holdings ({regionHoldings.length})</h3>
-      {regionHoldings.length === 0 ? (
+      <h3 style={{ marginTop: 4 }}>Holdings ({exchangeHoldings.length})</h3>
+      {exchangeHoldings.length === 0 ? (
         <div className="empty" style={{ padding: 20, fontSize: 12 }}>
-          No holdings in {region}. Buy some stocks!
+          No holdings in {exchange}. Buy some stocks!
         </div>
       ) : (
         <div className="col-scroll">
-          {regionHoldings.map(h => (
+          {exchangeHoldings.map(h => (
             <div key={h.id} className="holding-item">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="holding-symbol">{h.symbol}</span>
@@ -73,7 +73,7 @@ export default function AccountSummary({ account, region }: Props) {
               </div>
               <div className="holding-detail">
                 <span>{h.quantity} shares</span>
-                <span>Avg ${fmt(h.avg_price)}</span>
+                <span>Avg ${fmt(h.avg_cost)}</span>
                 <span>Now ${fmt(h.current_price)}</span>
                 <span>Mkt ${fmt(h.market_value)}</span>
               </div>

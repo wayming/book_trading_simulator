@@ -143,6 +143,18 @@ class Database:
         )
         self._db_conn.commit()
 
+    def update_holding_qty_and_cost(self, symbol: str, quantity: int, total_cost: float, region: str = "AU"):
+        """Update quantity and total_cost for a partial sell. Recalculates avg_price."""
+        now = datetime.now(timezone.utc).isoformat()
+        avg_price = total_cost / quantity if quantity > 0 else 0.0
+        self._db_conn.execute(
+            """UPDATE holdings
+               SET quantity = ?, avg_price = ?, total_cost = ?, updated_at = ?, region = ?
+               WHERE symbol = ?""",
+            (quantity, avg_price, total_cost, now, region.upper(), symbol.upper()),
+        )
+        self._db_conn.commit()
+
     #
     # Trade History
     #

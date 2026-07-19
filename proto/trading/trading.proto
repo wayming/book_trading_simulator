@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package trading;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/example/trading/proto";
+
+service TradingService {
+  // 初始化交易所账户：清空持仓，设置初始资金
+  rpc InitExchange(InitExchangeRequest) returns (InitExchangeResponse);
+
+  // 获取某只股票的实时报价
+  rpc GetQuote(GetQuoteRequest) returns (GetQuoteResponse);
+
+  // 买入股票
+  rpc BuyStock(BuyStockRequest) returns (TradeResponse);
+
+  // 卖出股票
+  rpc SellStock(SellStockRequest) returns (TradeResponse);
+
+  // 查看账户持仓、现金、持仓价值
+  rpc ViewPortfolio(ViewPortfolioRequest) returns (ViewPortfolioResponse);
+}
+
+// ==================== InitExchange ====================
+message InitExchangeRequest {
+  string exchange = 1;      // 交易所代码
+  double initial_fund = 2;  // 初始资金
+}
+
+message InitExchangeResponse {
+  bool success = 1;
+  string message = 2;
+  double initial_fund = 3;
+  google.protobuf.Timestamp initialized_at = 4;
+}
+
+// ==================== GetQuote ====================
+message GetQuoteRequest {
+  string exchange = 1;  // 交易所
+  string symbol = 2;    // 股票代码，如 "AAPL", "600519"
+}
+
+message GetQuoteResponse {
+  string exchange = 1;
+  string symbol = 2;
+  double current_price = 3;           // 当前价格
+  double open_price = 4;              // 开盘价
+  double high_price = 5;              // 最高价
+  double low_price = 6;               // 最低价
+  double previous_close = 7;          // 昨收
+  int64 volume = 8;                   // 成交量
+  google.protobuf.Timestamp timestamp = 9;
+  double change = 10;                 // 涨跌额
+  double change_pct = 11;             // 涨跌幅百分比
+}
+
+// ==================== Buy / Sell ====================
+message BuyStockRequest {
+  string exchange = 1;
+  string symbol = 2;
+  int32 quantity = 3;      // 买入数量
+  double price = 4;        // 买入价格（限价单）
+  OrderType order_type = 5; // 订单类型
+}
+
+message SellStockRequest {
+  string exchange = 1;
+  string symbol = 2;
+  int32 quantity = 3;      // 卖出数量
+  double price = 4;        // 卖出价格（限价单）
+  OrderType order_type = 5; // 订单类型
+}
+
+enum OrderType {
+  MARKET = 0;   // 市价单
+  LIMIT = 1;    // 限价单
+}
+
+enum OrderSide {
+  BUY = 0;
+  SELL = 1;
+}
+
+enum TradeStatus {
+  PENDING = 0;
+  FILLED = 1;
+  PARTIALLY_FILLED = 2;
+  REJECTED = 3;
+  CANCELLED = 4;
+}
+
+message TradeResponse {
+  string trade_id = 1;
+  TradeStatus status = 2;
+  string exchange = 3;
+  string symbol = 4;
+  OrderSide side = 5;           // BUY or SELL
+  int32 filled_quantity = 6;    // 实际成交数量
+  double filled_price = 7;      // 实际成交价格
+  double total_amount = 8;      // 成交总金额
+  double commission = 9;        // 手续费
+  double remaining_cash = 10;   // 交易后剩余现金
+  string message = 11;
+  google.protobuf.Timestamp executed_at = 12;
+}
+
+// ==================== ViewPortfolio ====================
+message ViewPortfolioRequest {
+  string exchange = 1;
+}
+
+message StockHolding {
+  string symbol = 1;
+  int32 quantity = 2;              // 持仓数量
+  double avg_cost = 3;             // 平均成本
+  double current_price = 4;        // 当前价格
+  double market_value = 5;         // 市值 = quantity * current_price
+  double unrealized_pnl = 6;       // 浮动盈亏
+  double unrealized_pnl_pct = 7;   // 浮动盈亏百分比
+  string id = 8;                   // 持仓ID
+  double total_cost = 9;           // 总成本 = quantity * avg_cost
+  string exchange = 10;            // 所属交易所
+}
+
+message ViewPortfolioResponse {
+  string exchange = 1;
+  double cash = 2;                          // 可用现金
+  repeated StockHolding holdings = 3;       // 持仓列表
+  double total_holdings_value = 4;          // 持仓总市值
+  double total_portfolio_value = 5;         // 总资产 = cash + holdings_value
+  double total_unrealized_pnl = 6;          // 总浮动盈亏
+  double total_unrealized_pnl_pct = 7;      // 总浮动盈亏百分比
+  google.protobuf.Timestamp timestamp = 8;
+  double initial_fund = 9;                  // 初始资金
+  map<string, double> exchange_balances = 10; // 各交易所现金余额
+}

@@ -1,6 +1,6 @@
 const BASE = '/api';
 
-// ── Types ────────────────────────────────────────────
+// ── Types (aligned with proto/trading/trading.proto) ──────────
 
 export interface HealthStatus {
   database: boolean;
@@ -16,7 +16,7 @@ export interface MarketStatus {
 
 export interface ConfigResponse {
   initial_fund: number;
-  region_balances: Record<string, number>;
+  exchange_balances: Record<string, number>;
   itick_token_masked: string;
 }
 
@@ -26,34 +26,42 @@ export interface ConfigUpdate {
 }
 
 export interface BuyRequest {
-  region: string;
-  fund_amount: number;
-  symbol: string;
-}
-
-export interface SellRequest {
-  symbol: string;
-  region: string;
-}
-
-export interface TradeRecord {
-  id: string;
-  action: string;
+  exchange: string;
   symbol: string;
   quantity: number;
   price: number;
-  total_value: number;
-  fund_balance_after: number;
-  region: string;
-  timestamp: string;
+  order_type: string;   // "MARKET" | "LIMIT"
+}
+
+export interface SellRequest {
+  exchange: string;
+  symbol: string;
+  quantity: number;
+  price: number;
+  order_type: string;   // "MARKET" | "LIMIT"
+}
+
+export interface TradeRecord {
+  trade_id: string;
+  status: string;
+  exchange: string;
+  symbol: string;
+  side: string;           // "BUY" | "SELL"
+  filled_quantity: number;
+  filled_price: number;
+  total_amount: number;
+  commission: number;
+  remaining_cash: number;
+  message: string;
+  executed_at: string;
 }
 
 export interface Holding {
   id: string;
   symbol: string;
-  region: string;
+  exchange: string;
   quantity: number;
-  avg_price: number;
+  avg_cost: number;
   total_cost: number;
   current_price: number;
   market_value: number;
@@ -62,14 +70,15 @@ export interface Holding {
 }
 
 export interface AccountSummary {
-  initial_fund: number;
-  fund_balance: number;
+  exchange: string;
+  cash: number;
+  holdings: Holding[];
   total_holdings_value: number;
   total_portfolio_value: number;
-  total_pnl: number;
-  total_pnl_pct: number;
-  region_balances: Record<string, number>;
-  holdings: Holding[];
+  total_unrealized_pnl: number;
+  total_unrealized_pnl_pct: number;
+  initial_fund: number;
+  exchange_balances: Record<string, number>;
 }
 
 export interface TradeRecordsResponse {
@@ -78,19 +87,20 @@ export interface TradeRecordsResponse {
 }
 
 export interface QuoteResponse {
+  exchange: string;
   symbol: string;
-  region: string;
-  price: number;
-  open: number;
-  high: number;
-  low: number;
+  current_price: number;
+  open_price: number;
+  high_price: number;
+  low_price: number;
+  previous_close: number;
   volume: number;
   change: number;
   change_pct: number;
   timestamp: string;
 }
 
-// ── API functions ─────────────────────────────────────
+// ── API functions ──────────────────────────────────────────
 
 export async function fetchHealth(): Promise<HealthStatus> {
   const res = await fetch(`${BASE}/health`);
@@ -102,8 +112,8 @@ export async function fetchMarketStatus(): Promise<MarketStatus> {
   return res.json();
 }
 
-export async function fetchQuote(region: string, symbol: string): Promise<QuoteResponse> {
-  const res = await fetch(`${BASE}/quote?region=${encodeURIComponent(region)}&symbol=${encodeURIComponent(symbol)}`);
+export async function fetchQuote(exchange: string, symbol: string): Promise<QuoteResponse> {
+  const res = await fetch(`${BASE}/quote?exchange=${encodeURIComponent(exchange)}&symbol=${encodeURIComponent(symbol)}`);
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.detail || 'Quote failed');
@@ -155,9 +165,9 @@ export async function sellStock(req: SellRequest): Promise<TradeRecord> {
   return res.json();
 }
 
-export async function fetchRecords(limit = 50, offset = 0, region?: string): Promise<TradeRecordsResponse> {
+export async function fetchRecords(limit = 50, offset = 0, exchange?: string): Promise<TradeRecordsResponse> {
   let url = `${BASE}/records?limit=${limit}&offset=${offset}`;
-  if (region) url += `&region=${encodeURIComponent(region)}`;
+  if (exchange) url += `&exchange=${encodeURIComponent(exchange)}`;
   const res = await fetch(url);
   return res.json();
 }

@@ -1,11 +1,11 @@
-"""Pydantic data models for Book Trading Simulator."""
+"""Pydantic data models for Book Trading Simulator — aligned with proto/trading/trading.proto."""
 
 from typing import Optional
 from pydantic import BaseModel
 
 
 #
-# Config
+# Config (infrastructure — no proto equivalent)
 #
 
 class ConfigUpdate(BaseModel):
@@ -15,43 +15,53 @@ class ConfigUpdate(BaseModel):
 
 class ConfigResponse(BaseModel):
     initial_fund: float
-    region_balances: dict[str, float]
+    exchange_balances: dict[str, float]
     itick_token_masked: str
 
 
 #
-# Trading
+# Trading — aligned with proto BuyStockRequest / SellStockRequest
 #
 
 class BuyRequest(BaseModel):
-    region: str = "AU"
-    fund_amount: float
-    symbol: str
-
-
-class SellRequest(BaseModel):
-    symbol: str
-    region: str = "AU"
-
-
-class TradeRecord(BaseModel):
-    id: str
-    action: str
+    exchange: str = "AU"
     symbol: str
     quantity: int
     price: float
-    total_value: float
-    fund_balance_after: float
-    region: str = "AU"
-    timestamp: str
+    order_type: str = "MARKET"   # "MARKET" | "LIMIT"
 
 
+class SellRequest(BaseModel):
+    exchange: str = "AU"
+    symbol: str
+    quantity: int
+    price: float
+    order_type: str = "MARKET"   # "MARKET" | "LIMIT"
+
+
+# aligned with proto TradeResponse
+class TradeRecord(BaseModel):
+    trade_id: str
+    status: str = "FILLED"       # PENDING | FILLED | PARTIALLY_FILLED | REJECTED | CANCELLED
+    exchange: str = "AU"
+    symbol: str
+    side: str = "BUY"            # BUY | SELL
+    filled_quantity: int
+    filled_price: float
+    total_amount: float
+    commission: float = 0.0
+    remaining_cash: float
+    message: str = ""
+    executed_at: str = ""
+
+
+# aligned with proto StockHolding
 class Holding(BaseModel):
     id: str
     symbol: str
-    region: str = "AU"
+    exchange: str = "AU"
     quantity: int
-    avg_price: float
+    avg_cost: float
     total_cost: float
     current_price: float = 0.0
     market_value: float = 0.0
@@ -59,15 +69,17 @@ class Holding(BaseModel):
     unrealized_pnl_pct: float = 0.0
 
 
+# aligned with proto ViewPortfolioResponse
 class AccountSummary(BaseModel):
-    initial_fund: float
-    fund_balance: float
+    exchange: str = ""
+    cash: float
+    holdings: list[Holding]
     total_holdings_value: float
     total_portfolio_value: float
-    total_pnl: float
-    total_pnl_pct: float
-    region_balances: dict[str, float] = {}
-    holdings: list[Holding]
+    total_unrealized_pnl: float
+    total_unrealized_pnl_pct: float
+    initial_fund: float
+    exchange_balances: dict[str, float] = {}
 
 
 class TradeRecordsResponse(BaseModel):
@@ -76,7 +88,7 @@ class TradeRecordsResponse(BaseModel):
 
 
 #
-# Health / Market
+# Health / Market (no proto equivalent)
 #
 
 class HealthStatus(BaseModel):
@@ -96,16 +108,17 @@ class ErrorResponse(BaseModel):
 
 
 #
-# Quote (no trade, no market-hours restriction)
+# Quote — aligned with proto GetQuoteResponse
 #
 
 class QuoteResponse(BaseModel):
+    exchange: str
     symbol: str
-    region: str
-    price: float
-    open: float = 0.0
-    high: float = 0.0
-    low: float = 0.0
+    current_price: float
+    open_price: float = 0.0
+    high_price: float = 0.0
+    low_price: float = 0.0
+    previous_close: float = 0.0
     volume: float = 0.0
     change: float = 0.0
     change_pct: float = 0.0
