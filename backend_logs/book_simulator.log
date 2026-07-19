@@ -1539,3 +1539,7 @@
 2026-07-19 06:12:48 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
 2026-07-19 06:12:48 [INFO] book_simulator.http: <-- GET /api/health  200  3.3ms
 2026-07-19 06:12:48 [INFO] book_simulator.http: <-- GET /api/records  200  4.6ms
+2026-07-19 06:13:03 [INFO] book_simulator.http: --> GET /api/health  [client=172.27.0.3]
+2026-07-19 06:13:03 [INFO] book_simulator.http: --> GET /api/records?limit=200&offset=0  [client=172.27.0.3]
+2026-07-19 06:13:03 [INFO] book_simulator.http: <-- GET /api/health  200  4.2ms
+2026-07-19 06:13:03 [INFO] book_simulator.http: <-- GET /api/records  200  4.7ms
